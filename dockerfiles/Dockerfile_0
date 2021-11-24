@@ -1,4 +1,5 @@
 # builder - first stage to build the application
+# Comment to test git sync
 FROM maven:3.5.4-jdk-11-slim AS build-env
 ADD ./pom.xml pom.xml
 ADD ./src src/
