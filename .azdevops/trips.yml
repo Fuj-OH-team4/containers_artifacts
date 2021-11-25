@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trips-deployment
+  namespace: api
+  labels:
+    deploy: trips
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: trips
+  template:
+    metadata:
+      labels:
+        app: trips
+    spec:
+      containers:
+      - image: "registryyzk4661.azurecr.io/trips:1.0"
+        imagePullPolicy: Always
+        name: trips
+        livenessProbe:
+          httpGet:
+            path: /api/trips/healthcheck
+            port: 8081
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /api/trips/healthcheck
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        ports:
+          - containerPort: 8081
+            name: http
+            protocol: TCP
+          - containerPort: 443
+            name: https
+            protocol: TCP
+        env:
+          - name: WEB_SERVER_BASE_URI
+            value: 'http://0.0.0.0'
+          - name: WEB_PORT
+            value: '8081'
+          - name: ASPNETCORE_ENVIRONMENT
+            value: 'Production'
+        envFrom:
+          - secretRef:
+              name: sql
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trips
+  namespace: api
+spec:
+  type: ClusterIP
+  selector:
+    app: trips
+  ports:
+    - protocol: TCP
+      name: trips-http
+      port: 80
+      targetPort: 8081
+    - protocol: TCP
+      name: trips-https
+      port: 443
+      targetPort: 443

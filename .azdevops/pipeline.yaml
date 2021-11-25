@@ -11,7 +11,8 @@ jobs:
   - job: Images
     steps:
       - script: |
-          sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o ./docker-compose
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o ./
+          
           sudo chmod +x ./docker-compose
         displayName: 'Get latest version of docker compose for parallel build of images (should be able to remove later)'
         workingDirectory: .azdevops/

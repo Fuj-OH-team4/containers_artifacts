@@ -46,6 +46,11 @@ The value for a configuration variable may be specified via an environment varia
 
 ## Run in Docker
 
+## build and run -- OH team4
+docker build -f ../../dockerfiles/Dockerfile_2 -t "tripinsights/userprofile:1.0" .
+docker run -d --network tripinsights -p 8083:80 --name userprofile -e "SQL_PASSWORD=Password123!" -e "SQL_SERVER=172.18.0.2" tripinsights/userprofile:1.0
+##
+
 Simple build:
 
 ```
@@ -68,11 +73,11 @@ To run the image
 
 ```bash
 # Example 1 - Set config values via environment variables
-docker run -d -p 8080:80 --name userprofile -e "SQL_PASSWORD=$SQL_PASSWORD" -e "SQL_SERVER=$SQL_SERVER" tripinsights/userprofile:1.0
+docker run -d -p 8083:80 --name userprofile -e "SQL_PASSWORD=$SQL_PASSWORD" -e "SQL_SERVER=$SQL_SERVER" tripinsights/userprofile:1.0
 
 # Example 2 - Set configuration via files. Server will expect config values in files like /secrets/SQL_USER.
 # The secrets must be mounted from a host volume (eg. $HOST_FOLDER) into the /secrets container volume.
-docker run -d -p 8080:80 --name userprofile -v $HOST_FOLDER:/secrets tripinsights/userprofile:1.0
+docker run -d -p 8083:80 --name userprofile -v $HOST_FOLDER:/secrets tripinsights/userprofile:1.0
 ```
 
 ## Testing
@@ -82,35 +87,35 @@ docker run -d -p 8080:80 --name userprofile -v $HOST_FOLDER:/secrets tripinsight
 List all user profiles.
 
 ```bash
-curl -i -X GET 'http://localhost:8080/api/user' 
+curl -i -X GET 'http://localhost:8083/api/user' 
 ```
 
 Fetch the user profile for id `aa1d876a-3e37-4a7a-8c9b-769ee6217ec2`.
 
 ```bash
-curl -i -X GET 'http://localhost:8080/api/user/aa1d876a-3e37-4a7a-8c9b-769ee6217ec2' 
+curl -i -X GET 'http://localhost:8083/api/user/aa1d876a-3e37-4a7a-8c9b-769ee6217ec2' 
 ```
 
 Create a new user profile with id `aa1d876a-3e37-4a7a-8c9b-769ee6217ec2`.
 
 ```bash
-curl -i -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{ "Deleted": false, "FirstName": "Hacker","FuelConsumption": 0,"HardAccelerations": 0,"HardStops": 0, "LastName": "Test","MaxSpeed": 0,"ProfilePictureUri": "https://pbs.twimg.com/profile_images/1003946090146693122/IdMjh-FQ_bigger.jpg", "Ranking": 0,"Rating": 0, "TotalDistance": 0, "TotalTime": 0, "TotalTrips": 0,  "UserId": "hacker2" }' 'http://localhost:8080/api/user/aa1d876a-3e37-4a7a-8c9b-769ee6217ec2' 
+curl -i -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{ "Deleted": false, "FirstName": "Hacker","FuelConsumption": 0,"HardAccelerations": 0,"HardStops": 0, "LastName": "Test","MaxSpeed": 0,"ProfilePictureUri": "https://pbs.twimg.com/profile_images/1003946090146693122/IdMjh-FQ_bigger.jpg", "Ranking": 0,"Rating": 0, "TotalDistance": 0, "TotalTime": 0, "TotalTrips": 0,  "UserId": "hacker2" }' 'http://localhost:8083/api/user/aa1d876a-3e37-4a7a-8c9b-769ee6217ec3' 
 ```
 
 Update the `FuelConsumption` and `HardStops` values for an existing user profile with id of `aa1d876a-3e37-4a7a-8c9b-769ee6217ec2`.
 
 ```bash
-curl -i -X PATCH --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{ "FuelConsumption":20, "HardStops":74371 }' 'http://localhost:8080/api/user/aa1d876a-3e37-4a7a-8c9b-769ee6217ec2' 
+curl -i -X PATCH --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{ "FuelConsumption":20, "HardStops":74371 }' 'http://localhost:8083/api/user/aa1d876a-3e37-4a7a-8c9b-769ee6217ec2' 
 ```
 
 Delete the user profile for id `aa1d876a-3e37-4a7a-8c9b-769ee6217ec2`.
 
 ```bash
-curl -i -X DELETE 'http://localhost:8080/api/user/aa1d876a-3e37-4a7a-8c9b-769ee6217ec2'
+curl -i -X DELETE 'http://localhost:8083/api/user/aa1d876a-3e37-4a7a-8c9b-769ee6217ec2'
 ```
 
 Get healthcheck status
 
 ```bash
-curl -i -X GET 'http://localhost:8080/api/user/healthcheck' 
+curl -i -X GET 'http://localhost:8083/api/user/healthcheck' 
 ```

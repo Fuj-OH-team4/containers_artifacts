@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tripviewer-deployment
+  namespace: api
+  labels:
+    deploy: tripviewer
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tripviewer
+  template:
+    metadata:
+      labels:
+        app: tripviewer
+    spec:
+      containers:
+      - image: "registryyzk4661.azurecr.io/tripviewer:1.0"
+        imagePullPolicy: Always
+        name: tripviewer
+        livenessProbe:
+          httpGet:
+            path: /api/tripviewer/healthcheck
+            port: 8084
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /api/tripviewer/healthcheck
+            port: 8084
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        ports:
+          - containerPort: 8084
+            name: http
+            protocol: TCP
+          - containerPort: 443
+            name: https
+            protocol: TCP
+        env:
+          - name: WEB_SERVER_BASE_URI
+            value: 'http://0.0.0.0'
+          - name: WEB_PORT
+            value: '8084'
+          - name: ASPNETCORE_ENVIRONMENT
+            value: 'Production'
+        envFrom:
+          - secretRef:
+              name: sql
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tripviewer
+  namespace: api
+spec:
+  type: ClusterIP
+  selector:
+    app: tripviewer
+  ports:
+    - protocol: TCP
+      name: tripviewer-http
+      port: 80
+      targetPort: 8084
+    - protocol: TCP
+      name: tripviewer-https
+      port: 443
+      targetPort: 443

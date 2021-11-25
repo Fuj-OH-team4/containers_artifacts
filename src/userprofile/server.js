@@ -49,7 +49,7 @@ function getConfigValue(config) {
     return value;
 }
 var port        = process.env.PORT || 80;
-var sqlUser     = getConfigValue({ name:'SQL_USER', defaultValue:'sqladmin', required:true });
+var sqlUser     = getConfigValue({ name:'SQL_USER', defaultValue:'sa', required:true });
 var sqlPassword = getConfigValue({ name:'SQL_PASSWORD', required:true });
 var sqlServer   = getConfigValue({ name:'SQL_SERVER', required:true });
 var sqlDBName   = getConfigValue({ name:'SQL_DBNAME', defaultValue:'mydrivingDB', required:true });
