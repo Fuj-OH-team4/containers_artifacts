@@ -2,22 +2,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: userprofile
+  name: user-java
+  namespace: api
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: userprofile
+      app: user-java
   template:
     metadata:
       labels:
-        app: userprofile
+        app: user-java
     spec:
       nodeSelector:
         "kubernetes.io/os": linux
       containers:
-      - name: userprofile
-        image: "registryyzk4661.azurecr.io/tripinsights/userprofile:1.0"
+      - name: user-java
+        image: "registryyzk4661.azurecr.io/tripinsights/user-java:1.0"
         ports:
         - containerPort: 80
         env:
@@ -41,14 +42,16 @@ spec:
               secretKeyRef:
                 name: sqlsecrets
                 key: SQL_DBNAME
+          - name: PORT
+            value: '80'
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: userprofile
+  name: user-java
 spec:
   type: LoadBalancer
   ports:
   - port: 80
   selector:
-    app: userprofile
+    app: user-java

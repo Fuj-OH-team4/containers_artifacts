@@ -2,22 +2,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: poi
+  name: trips
+  namespace: api
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: poi
+      app: trips
   template:
     metadata:
       labels:
-        app: poi
+        app: trips
     spec:
       nodeSelector:
         "kubernetes.io/os": linux
       containers:
-      - name: poi
-        image: "registryyzk4661.azurecr.io/tripinsights/poi:1.0"
+      - name: trips
+        image: "registryyzk4661.azurecr.io/tripinsights/trips:1.0"
         ports:
         - containerPort: 80
         env:
@@ -41,20 +42,20 @@ spec:
               secretKeyRef:
                 name: sqlsecrets
                 key: SQL_DBNAME
-          - name: ASPNETCORE_ENVIRONMENT
-            value: 'Local'
-          - name: WEB_PORT
+          - name: DEBUG_LOGGING
+            value: 'false'
+          - name: PORT
             value: '80'
-          - name: WEB_SERVER_BASE_URI
-            value: 'http://0.0.0.0'
+          - name: OPENAPI_DOCS_URI
+            value: 'http://52.226.194.225'
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: poi
+  name: trips
 spec:
   type: LoadBalancer
   ports:
   - port: 80
   selector:
-    app: poi
+    app: trips
